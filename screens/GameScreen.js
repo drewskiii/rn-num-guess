@@ -36,6 +36,9 @@ const GameScreen = props => {
 
     const [currentGuess, setCurrentGuess] = useState(initialGuess)
     const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]); // counter for num of guesses
+    const [availableDeviceWidth, setAvailableDeviceWidth] = useState(Dimensions.get('window').width);
+    const [availableDeviceHeight, setAvailableDeviceHeight] = useState(Dimensions.get('window').height);
+
     // use useRef that survives its value after component rerendered
     // will not be reset to 1 or 100 on rerender,
     // and doesn't rerender comp on change unlike useState
@@ -45,6 +48,18 @@ const GameScreen = props => {
     // using object destructuring to destructure props
     // pulling these properties out of props obj and storing them
     // in constants with equal names so we won't have to write "props."
+    useEffect(() => {
+        const updateLayout = () => {
+            setAvailableDeviceWidth(Dimensions.get('window').width);
+            setAvailableDeviceHeight(Dimensions.get('window').height);
+        };
+        Dimensions.addEventListener('change', updateLayout);
+
+        return (() => {
+            Dimensions.removeEventListener('change', updateLayout)
+        });
+    });
+
     const { userChoice, onGameOver } = props;
     useEffect(() => {
         // if (currentGuess === props.userChoice) {
@@ -77,8 +92,39 @@ const GameScreen = props => {
     };
 
     let listContainerStyle = styles.listContainer;
-    if (Dimensions.get('window').width < 350 ) {
+    if (availableDeviceWidth < 350 ) {
         listContainerStyle = styles.listContainerBig;
+    }
+    if (availableDeviceHeight < 500) {
+        return (
+            <View style={styles.screen}>
+                <Text style={DefaultStyles.title}>
+                    Oppenent's guess
+                </Text>
+                <View style={styles.controls}>
+                    <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
+                        <Ionicons name={'md-remove'} size={24} color={'white'}/>
+                    </MainButton>
+                    <NumberContainer>{currentGuess}</NumberContainer>    
+                    <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
+                        <Ionicons name={'md-add'} size={24} color={'white'}/>
+                    </MainButton>
+                </View>
+            <View style={listContainerStyle}>    
+                {/* <ScrollView contentContainerStyle={styles.list}>
+                    {pastGuesses
+                    .map((guess, idx) => renderListItem(guess, pastGuesses.length - idx))
+                    }
+                </ScrollView> */}
+                <FlatList 
+                    keyExtractor={item => item} // making data {'key' : value, ...}
+                    data={pastGuesses} 
+                    renderItem={renderListItem.bind(this, pastGuesses.length)}
+                    contentContainerStyle={styles.list}
+                    />
+            </View>
+        </View>
+        );
     }
 
     return (
@@ -115,6 +161,12 @@ const GameScreen = props => {
 }
 
 const styles = StyleSheet.create({
+    controls: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '80%',
+        alignItems: 'center',
+    },
     screen: {
         flex: 1,
         padding: 10,
