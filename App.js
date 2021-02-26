@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';  // prolong loading until fetches are done
 
@@ -58,13 +58,14 @@ export default function App() {
   }
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <Header title="Guess a number"/>
       {/*<StartGameScreen/>
        <GameScreen/>  
        can't simply render screen right away, need useState and vars*/}
       {content}
-    </View>
+    </SafeAreaView>
+    
   );
 }
 
