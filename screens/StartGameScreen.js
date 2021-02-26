@@ -3,7 +3,8 @@ import React, {useState} from 'react';
 import { View, StyleSheet, Text, TextInput, Button, 
     TouchableWithoutFeedback,
     Keyboard,
-    Alert
+    Alert,
+    Dimensions,
 
 } from 'react-native';
 
@@ -108,13 +109,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     inputContainer: {
-        width: 300,
-        maxWidth: '80%',
+        width: "80%",
+        maxWidth: '95%',
+        minWidth: 300,
+        // maxWidth: 300,
         alignItems:'center',
         
     },
     button: {
-        width: 100,
+        // width: 100,
+        width: Dimensions.get('window').width / 4,
 
     },
     input: {
